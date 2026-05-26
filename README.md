@@ -1,4 +1,4 @@
-# us-jewelry-lead-extractor
+# jewelry-shop-scraper
 
 A Python-based web scraper that extracts contact information for jewelry shops in major US cities that currently do not have an active website. 
 
