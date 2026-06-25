@@ -216,3 +216,34 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+
+# ==========================================
+# Jewelry Scraper Generated Files
+# ==========================================
+
+# Scraped outputs
+outputs/
+
+# Progress files
+jewelry_progress.csv
+all_links.json
+
+# Large datasets
+jewelry_all.csv
+jewelry_final.csv
+jewelry_sample.csv
+qualified_leads.csv
+
+# Statistics exports
+summary.json
+
+# Screenshots generated during development
+screenshots/temp/
+
+# Chrome profile (if added later)
+chrome_profile/
+
+# Keep sample datasets for portfolio
+!data/sample_output.csv
+!data/qualified_leads_sample.csv
