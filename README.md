@@ -1,112 +1,91 @@
-# Jewelry Business Lead Generation System
+# 💎 Jewelry Shop Scraper
 
-A Python-based lead generation tool that discovers jewelry businesses across the United States and identifies stores that do not have a dedicated website.
+![Python](https://img.shields.io/badge/Python-3.11-blue)
+![Selenium](https://img.shields.io/badge/Selenium-WebDriver-green)
+![BeautifulSoup](https://img.shields.io/badge/BeautifulSoup-4.x-orange)
+![Status](https://img.shields.io/badge/Status-Completed-brightgreen)
+![License](https://img.shields.io/badge/License-MIT-yellow)
 
-The scraper automates Google Maps data collection, extracts business contact information, filters businesses that already have a website, and generates a list of qualified leads for digital marketing agencies, website development firms, SEO consultants, and sales teams.
+A production-style Google Maps scraper built with Python, Selenium, and BeautifulSoup to discover jewelry businesses across the United States, extract business information, filter qualified leads, and export clean datasets for sales prospecting and lead generation.
 
 ---
 
-## Business Problem
+## Project Overview
 
-Many small jewelry businesses rely solely on Google Maps, Facebook, or Instagram for their online presence and do not have a dedicated website.
+Finding qualified local business leads manually is time-consuming and difficult to scale.
 
-Finding these businesses manually is time-consuming and inefficient.
+This project automates the process of searching Google Maps across hundreds of U.S. cities, collecting jewelry business listings, extracting business information, filtering businesses that already have an official website, and exporting structured datasets ready for outreach or further analysis.
 
-This project automates the process by:
-
-* Discovering jewelry businesses from Google Maps
-* Extracting contact information
-* Identifying businesses without a dedicated website
-* Generating qualified outreach leads
+The scraper was designed with reliability in mind and includes features such as checkpointing, crash recovery, duplicate removal, configurable search parameters, and incremental data saving for long-running scraping sessions.
 
 ---
 
 ## Features
 
-### Business Discovery
-
-* Searches hundreds of US cities
-* Supports multiple search keywords
-* Collects Google Maps business listings
-
-### Contact Extraction
-
-* Business Name
-* Phone Number
-* Address
-* Website
-* Google Maps URL
-
-### Lead Qualification
-
-* Detects whether a business has a dedicated website
-* Filters social media pages and directory listings
-* Generates lists of businesses that may benefit from website development services
-
-### Reliability Features
-
-* Duplicate removal
-* Progress checkpoints
-* Resume after interruption
-* Incremental CSV exports
+- Search jewelry businesses across **385+ U.S. cities**
+- Multiple search keywords per city for broader coverage
+- Automatic duplicate removal
+- Resume interrupted scraping sessions
+- Automatic checkpoint saving
+- Chrome restart mechanism to reduce memory issues
+- Skip permanently closed businesses
+- Skip businesses without phone numbers
+- Skip non-U.S. businesses
+- Filter businesses that already have official websites
+- Clean and normalize scraped data
+- Export results as CSV and Excel
+- Manual review workflow for stale listings
+- Configurable cities and search terms
 
 ---
 
-## Technologies Used
-
-* Python 3
-* Selenium
-* BeautifulSoup4
-* Pandas
-* NumPy
-* WebDriver Manager
-* JSON
-
----
-
-## Project Structure
+## Repository Structure
 
 ```text
 jewelry-shop-scraper/
-
+│
 ├── config/
+│   ├── cities.json
+│   └── search_terms.json
+│
 ├── data/
+│   ├── README.md
+│   └── sample/
+│       ├── jewelry_all_sample.csv
+│       └── jewelry_final_sample.csv
+│
+├── docs/
+│   ├── diagrams/
+│   └── screenshots/
+│
 ├── notebooks/
-├── outputs/
-├── screenshots/
+│   └── google_maps_jewelry_scraper.ipynb
+│
 ├── src/
+│   ├── collect_links.py
+│   ├── scrape_business.py
+│   └── utils.py
+│
+├── .gitignore
+├── known_limitations.md
+├── LICENSE
 ├── README.md
-├── requirements.txt
-└── .gitignore
+└── requirements.txt
 ```
 
 ---
 
-## Workflow
+## Tech Stack
 
-```text
-Google Maps Search
-        ↓
-Collect Business URLs
-        ↓
-Visit Business Pages
-        ↓
-Extract Contact Information
-        ↓
-Identify Website Status
-        ↓
-Generate Qualified Leads
-        ↓
-Export CSV Files
-```
-
----
-
-## Sample Output
-
-| Business Name   | Phone        | Address    | Website | Website Available |
-| --------------- | ------------ | ---------- | ------- | ----------------- |
-| Example Jewelry | 123-456-7890 | Dallas, TX | None    | False             |
+| Technology | Purpose |
+|------------|---------|
+| Python | Core programming language |
+| Selenium | Browser automation |
+| BeautifulSoup | HTML parsing |
+| Pandas | Data processing |
+| OpenPyXL | Excel export |
+| WebDriver Manager | Automatic ChromeDriver management |
+| tqdm | Progress tracking |
 
 ---
 
@@ -116,11 +95,7 @@ Clone the repository:
 
 ```bash
 git clone https://github.com/priyansh1211/jewelry-shop-scraper.git
-```
 
-Move into the project directory:
-
-```bash
 cd jewelry-shop-scraper
 ```
 
@@ -132,91 +107,177 @@ pip install -r requirements.txt
 
 ---
 
-## Running the Project
+## Configuration
 
-### Step 1 - Collect Google Maps URLs
+The scraper has been designed to be configurable without modifying the source code.
 
-```bash
-python src/collect_links.py
+### Cities
+
+Edit:
+
+```
+config/cities.json
 ```
 
-### Step 2 - Scrape Business Information
+to specify the list of cities to search.
 
-```bash
-python src/scrape_businesses.py
+Example:
+
+```json
+[
+    "Houston",
+    "Dallas",
+    "Chicago"
+]
 ```
 
-### Step 3 - Generate Qualified Leads
+### Search Terms
 
-```bash
-python src/clean_data.py
+Edit:
+
 ```
+config/search_terms.json
+```
+
+Example:
+
+```json
+[
+    "jewelry shop",
+    "jeweler",
+    "jewelry store",
+    "gold shop"
+]
+```
+
+The scraper automatically generates search combinations using every city and every search term.
+
+---
+
+## Workflow
+
+The project follows the workflow below:
+
+1. Load configuration files.
+2. Generate Google Maps search queries.
+3. Search Google Maps for every city and keyword combination.
+4. Collect unique business listing URLs.
+5. Resume from previous checkpoints if available.
+6. Visit every business listing.
+7. Extract:
+   - Business name
+   - Phone number
+   - Address
+   - Website
+8. Filter:
+   - Permanently closed businesses
+   - Non-U.S. businesses
+   - Businesses without phone numbers
+   - Businesses with stale activity
+9. Identify businesses without official websites.
+10. Export clean datasets to CSV and Excel.
 
 ---
 
 ## Output Files
 
-### All Businesses
+The scraper generates several output files during execution.
 
-```text
-outputs/jewelry_all.csv
-```
-
-Contains all scraped businesses.
-
-### Qualified Leads
-
-```text
-outputs/qualified_leads.csv
-```
-
-Contains businesses without a dedicated website.
-
-### Summary Statistics
-
-```text
-outputs/summary.json
-```
-
-Contains scraping statistics and lead counts.
+| File | Description |
+|------|-------------|
+| jewelry_all.csv | All scraped businesses |
+| jewelry_all.xlsx | Excel version of all businesses |
+| jewelry_final.csv | Businesses without official websites |
+| jewelry_final.xlsx | Excel version of filtered businesses |
+| jewelry_progress.csv | Checkpoint for resume support |
+| jewelry_skipped.csv | Businesses skipped during scraping |
+| all_links.json | Cached Google Maps listing URLs |
 
 ---
 
-## Use Cases
+## Sample Data
 
-This project can be used by:
+Example output files are available under:
 
-* Website Development Agencies
-* SEO Agencies
-* Digital Marketing Firms
-* Sales Teams
-* Lead Generation Specialists
-* Market Research Analysts
+```
+data/sample/
+```
+
+These sample datasets demonstrate the format of the generated files without requiring users to execute the scraper.
+
+---
+
+## Engineering Decisions
+
+Several design choices were made to improve reliability during long scraping sessions.
+
+### Resume Support
+
+The scraper automatically resumes from previously saved progress after interruptions.
+
+### Checkpoint Saving
+
+Progress is periodically saved to minimize data loss.
+
+### Chrome Restart
+
+Chrome is restarted after processing a configurable number of listings to reduce memory usage.
+
+### Duplicate Removal
+
+Businesses discovered through multiple search keywords are automatically deduplicated using their Google Maps URL.
+
+### Website Classification
+
+Businesses are classified based on whether they have an official website. Links to common social platforms such as Facebook, Instagram, WhatsApp, X (Twitter), and YouTube are not considered official business websites.
+
+---
+
+## Known Limitations
+
+This scraper depends on the current structure of Google Maps.
+
+Possible limitations include:
+
+- Google Maps HTML structure may change over time.
+- Large scraping sessions may trigger rate limiting or CAPTCHA challenges.
+- Some businesses intentionally do not publish phone numbers.
+- Infinite scrolling means not every business is guaranteed to be loaded.
+- Businesses using only social media pages are treated as not having an official website.
+
+Additional details are available in **known_limitations.md**.
 
 ---
 
 ## Future Improvements
 
-* Playwright support
-* Proxy rotation
-* State-wise analytics
-* Lead scoring system
-* Automated email enrichment
-* Dashboard reporting
+Potential enhancements include:
+
+- Playwright implementation
+- Headless execution mode
+- Proxy rotation
+- Parallel scraping
+- Docker support
+- Command-line interface
+- Logging framework
+- Unit testing
+- Retry strategies
+- Automatic CAPTCHA detection
 
 ---
 
 ## Disclaimer
 
-This project is intended for educational, research, and business intelligence purposes only.
+This project was created for educational and portfolio purposes.
 
-Users are responsible for complying with the Terms of Service of any platform they access and for following all applicable laws and regulations regarding data collection and usage.
+Users are responsible for ensuring that their use of this project complies with Google Maps Terms of Service and all applicable laws and regulations.
 
 ---
 
 ## Author
 
-Priyansh Bhatt
+**Priyansh Bhatt**
 
-GitHub:
-https://github.com/priyansh1211
+This project is part of my Python Web Scraping portfolio and demonstrates building reliable, production-inspired data collection pipelines using Selenium, BeautifulSoup, and Pandas.
+
+If you found this repository useful, consider giving it a ⭐.
